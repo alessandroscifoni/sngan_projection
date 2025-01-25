@@ -9,7 +9,7 @@ mkdir -p $SAVE_PATH
 for dir in `find $IMAGENET_PATH -type d -maxdepth 1 -mindepth 1`; do
    echo $dir
    mkdir -p ${SAVE_PATH}/${dir##*/} 
-   for name in ${dir}/*.JPEG; do
+   for name in ${dir}/*.{JPEG,JPG}; do
       w=`identify -format "%w" $name`
       h=`identify -format "%h" $name`
       if [ $w -ge 256 ] && [ $h -ge 256 ]; then
