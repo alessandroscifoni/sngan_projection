@@ -38,8 +38,7 @@ class PlantsDataset(chainer.dataset.DatasetMixin):
 
         image = image[:, top:bottom, left:right]
         _, h, w = image.shape
-        image = scipy.misc.imresize(image.transpose(1, 2, 0),
-                                    [self.size, self.size], self.resize_method).transpose(2, 0, 1)
+        image = _imresize(image, self.size, self.resize_method)
         image = image / 128. - 1.
         image += np.random.uniform(size=image.shape, low=0., high=1. / 128)
         return image
@@ -48,6 +47,19 @@ class PlantsDataset(chainer.dataset.DatasetMixin):
         image, label = self.base[i]
         image = self.transform(image)
         return image, label
+
+
+def _imresize(image, size, resize_method):
+    image = image.transpose(1, 2, 0)
+
+    original_img_type = image.dtype
+    image = image.astype(np.uint8)  # They are already 0-255, not 0-1, even if the original image is float32
+
+    image_pil = Image.fromarray(image)
+    image_pil = image_pil.resize((size, size), Image.BILINEAR if resize_method == 'bilinear' else Image.BICUBIC)
+
+    image = np.array(image_pil).transpose(2, 0, 1)
+    return image.astype(original_img_type)
 
 
 if __name__ == "__main__":
