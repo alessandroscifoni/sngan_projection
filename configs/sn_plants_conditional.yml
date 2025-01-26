@@ -1,12 +1,12 @@
 # conditional CIFAR10 generation with SN and projection discriminator
 batchsize: 16
-iteration: 100000
-iteration_decay_start: 75000
+iteration: 10000
+iteration_decay_start: 7500
 seed: 0
 display_interval: 100
 progressbar_interval: 100
-snapshot_interval: 10000
-evaluation_interval: 5000
+snapshot_interval: 1000
+evaluation_interval: 500
 
 models:
   generator:
