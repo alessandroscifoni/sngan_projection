@@ -14,6 +14,7 @@ import sys
 import tarfile
 import numpy as np
 import tensorflow as tf
+import tensorflow.compat.v1 as tf1
 import glob
 import scipy.misc
 import math
@@ -207,19 +208,19 @@ def set_tf_params(model, write_graph=False):
     """Update the parameters of the given chainer model with the downloaded
     TensorFlow model."""
 
-    with tf.gfile.FastGFile(os.path.join(
+    with tf1.gfile.FastGFile(os.path.join(
             MODEL_DIR, 'classify_image_graph_def.pb'), 'rb') as f:
-        graph_def = tf.GraphDef()
+        graph_def = tf1.GraphDef()
         graph_def.ParseFromString(f.read())
-        _ = tf.import_graph_def(graph_def, name='')
+        _ = tf1.graph_util.import_graph_def(graph_def, name='')
 
         if write_graph:
             # Write graph to file so that it can be visualized using TensorBoard
-            summary_writer = tf.summary.FileWriter('data', graph=graph_def)
+            summary_writer = tf1.summary.FileWriter('data', graph=graph_def)
 
-    config = tf.ConfigProto()
+    config = tf1.ConfigProto()
     config.gpu_options.allow_growth = True  # Do not allocale the whole GPU mem
-    with tf.Session(config=config) as sess:
+    with tf1.Session(config=config) as sess:
         copy_inception(sess, model)
 
 
