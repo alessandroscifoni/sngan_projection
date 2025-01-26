@@ -43,6 +43,21 @@ function convertImage() {
    magick "$name" -resize 256x256^ -quality 95 -gravity center -extent 256x256 "$out_file"
 }
 
+# Replace all spaces in filenames, since they cause a lot of trouble
+function replace_spaces() {
+   python << EOF
+from pathlib import Path
+
+cwd = Path.cwd()
+for path in cwd.rglob('*'):
+   if ' ' in str(path):
+         new_path = Path(str(path).replace(' ', '_'))
+         path.rename(new_path)
+EOF
+}
+
+(cd "$IMAGENET_PATH" && replace_spaces)
+
 # Preprocess training data
 mkdir -p "$SAVE_PATH"
 for dir in `find "$IMAGENET_PATH" -type d -maxdepth 1 -mindepth 1`; do
@@ -59,3 +74,5 @@ done
 #        convert -resize 256x256^ -quality 95 -gravity center -extent 256x256 "$name" ${SAVE_PATH_VAL}/${name##*/}
 #     done
 # fi
+
+(cd "$SAVE_PATH" && replace_spaces)
