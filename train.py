@@ -62,7 +62,7 @@ def main():
                         help='number of parallel data loading processes')
 
     args = parser.parse_args()
-    config = yaml_utils.Config(yaml.load(open(args.config_path)))
+    config = yaml_utils.Config(yaml.full_load(open(args.config_path)))
     chainer.cuda.get_device_from_id(args.gpu).use()
     gen, dis = load_models(config)
     gen.to_gpu(device=args.gpu)
